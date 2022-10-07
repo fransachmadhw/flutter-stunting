@@ -1,10 +1,13 @@
-# flutter_stunting
+# FLUTTER STUNTING
 
 A new Flutter project.
 
 ## Getting Started
 
 This project is a starting point for a Flutter application.
+
+After cloning it, you should run 'flutter pub get' in order to install all dependency.
+Then, to run the app simply write 'flutter run' in terminal.
 
 A few resources to get you started if this is your first Flutter project:
 
