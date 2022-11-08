@@ -47,3 +47,6 @@ const Color green200 = Color(0xFF80BFAF);
 const Color green300 = Color(0xFF55AA94);
 const Color green400 = Color(0xFF2A947A);
 const Color green500 = Color(0xFF007F5F);
+
+// Default Spacing
+const double spacing = 8.0;
