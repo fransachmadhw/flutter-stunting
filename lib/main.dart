@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'globals.dart' as globals;
+import 'package:flutter_stunting/globals.dart';
+// import 'globals.dart' as globals;
 
 void main() {
   runApp(const MyApp());
@@ -12,7 +13,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: globals.title,
+      title: "globals.title",
       theme: ThemeData(
         // This is the theme of your application.
         //
@@ -25,7 +26,7 @@ class MyApp extends StatelessWidget {
         // is not restarted.
         primarySwatch: Colors.blue,
       ),
-      home: MyHomePage(title: globals.title),
+      home: MyHomePage(title: "globals.title"),
     );
   }
 }
@@ -101,7 +102,7 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
             Text(
               '$_counter',
-              style: Theme.of(context).textTheme.headline4,
+              style: const TextStyle(color: red500),
             ),
           ],
         ),
