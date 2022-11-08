@@ -25,7 +25,7 @@ class MyApp extends StatelessWidget {
               secondary: primary300,
             ),
       ),
-      home: const LoginPage(),
+      home: const SplashScreen(),
     );
   }
 }
