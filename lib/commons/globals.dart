@@ -50,3 +50,4 @@ const Color green500 = Color(0xFF007F5F);
 
 // Default Spacing
 const double spacing = 8.0;
+const double radius = 12.0;

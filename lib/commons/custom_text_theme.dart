@@ -32,13 +32,18 @@ const customTextTheme = TextTheme(
     fontWeight: FontWeight.normal,
     color: black,
   ),
-  bodyLarge: TextStyle(
+  titleMedium: TextStyle(
     fontSize: 18,
     fontWeight: FontWeight.normal,
     color: black,
   ),
-  bodyMedium: TextStyle(
+  bodyLarge: TextStyle(
     fontSize: 16,
+    fontWeight: FontWeight.normal,
+    color: black,
+  ),
+  bodyMedium: TextStyle(
+    fontSize: 14,
     fontWeight: FontWeight.normal,
     color: black,
   ),
