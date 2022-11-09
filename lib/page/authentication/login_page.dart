@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_stunting/commons/globals.dart';
-import 'package:flutter_stunting/page/authentication/register_page.dart';
+import 'package:flutter_stunting/page/authentication/register_page_1.dart';
 import 'package:flutter_stunting/widgets/button/primary_button.dart';
 import 'package:flutter_stunting/widgets/input/custom_bordered_input.dart';
 import 'package:iconify_flutter/icons/ph.dart';
@@ -90,7 +90,7 @@ class _LoginPageState extends State<LoginPage> {
                       onTap: () => Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => const RegisterPage()),
+                            builder: (context) => const RegisterPage1()),
                       ),
                       child: Text(
                         'Daftar Sekarang ',

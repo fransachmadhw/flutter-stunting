@@ -24,7 +24,7 @@ class PrimaryButton extends StatelessWidget {
           type == ButtonType.primary ? primary500 : white,
         ),
         padding: MaterialStateProperty.all(
-          const EdgeInsets.symmetric(vertical: spacing * 2),
+          const EdgeInsets.symmetric(vertical: spacing * 3),
         ),
         shape: MaterialStateProperty.all(
           RoundedRectangleBorder(
