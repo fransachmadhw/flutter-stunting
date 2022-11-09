@@ -17,7 +17,7 @@ class PrimaryButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(
-      onPressed: () => onPressed,
+      onPressed: () => onPressed(),
       style: ButtonStyle(
         elevation: MaterialStateProperty.all(0),
         backgroundColor: MaterialStateProperty.all(
