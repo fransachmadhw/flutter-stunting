@@ -14,8 +14,11 @@ class RegisterPage2 extends StatefulWidget {
 }
 
 class _RegisterPage2State extends State<RegisterPage2> {
-  TextEditingController usernameController = TextEditingController();
-  TextEditingController passwordController = TextEditingController();
+  TextEditingController namaLengkapController = TextEditingController();
+  TextEditingController nikController = TextEditingController();
+  TextEditingController ttlController = TextEditingController();
+  TextEditingController alamatKTPController = TextEditingController();
+  TextEditingController alamatDomisiliController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -55,31 +58,31 @@ class _RegisterPage2State extends State<RegisterPage2> {
                     runSpacing: spacing * 2,
                     children: [
                       CustomBorderedInput(
-                        controller: usernameController,
+                        controller: namaLengkapController,
                         hintText: "Nama Lengkap",
                         onChanged: (e) {},
                         prefixIcon: Ph.user,
                       ),
                       CustomBorderedInput(
-                        controller: usernameController,
+                        controller: nikController,
                         hintText: "Nomor Induk Kependudukan",
                         onChanged: (e) {},
                         prefixIcon: Ph.identification_card,
                       ),
                       CustomBorderedInput(
-                        controller: usernameController,
+                        controller: ttlController,
                         hintText: "Tempat, Tanggal Lahir",
                         onChanged: (e) {},
                         prefixIcon: Ph.identification_card,
                       ),
                       CustomBorderedInput(
-                        controller: usernameController,
+                        controller: alamatKTPController,
                         hintText: "Alamat KTP",
                         onChanged: (e) {},
                         prefixIcon: Ph.map_pin,
                       ),
                       CustomBorderedInput(
-                        controller: usernameController,
+                        controller: alamatDomisiliController,
                         hintText: "Alamat Domisili",
                         onChanged: (e) {},
                         prefixIcon: Ph.house,
@@ -89,8 +92,14 @@ class _RegisterPage2State extends State<RegisterPage2> {
                 ],
               ),
               PrimaryButton(
-                onPressed: () {},
-                title: 'Selanjutnya',
+                onPressed: () {
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) =>
+                        _buildPopupDialog(context),
+                  );
+                },
+                title: 'Daftar',
                 type: ButtonType.primary,
               ),
               // Align(
@@ -103,4 +112,25 @@ class _RegisterPage2State extends State<RegisterPage2> {
       ),
     );
   }
+}
+
+Widget _buildPopupDialog(BuildContext context) {
+  return new AlertDialog(
+    title: const Text('Popup example'),
+    content: new Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        Text("Hello"),
+      ],
+    ),
+    actions: <Widget>[
+      // new ElevatedButton(
+      //   onPressed: () {
+      //     Navigator.of(context).pop();
+      //   },
+      //   child: const Text('Close'),
+      // ),
+    ],
+  );
 }

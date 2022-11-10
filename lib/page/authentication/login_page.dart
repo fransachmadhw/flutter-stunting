@@ -81,7 +81,7 @@ class _LoginPageState extends State<LoginPage> {
                   children: [
                     Text(
                       'Belum Punya Akun? ',
-                      style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                      style: Theme.of(context).textTheme.bodyMedium!.copyWith(
                             color: neutral600,
                             fontWeight: FontWeight.w500,
                           ),
@@ -94,7 +94,7 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                       child: Text(
                         'Daftar Sekarang ',
-                        style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                        style: Theme.of(context).textTheme.bodyMedium!.copyWith(
                               color: primary500,
                               fontWeight: FontWeight.w500,
                             ),

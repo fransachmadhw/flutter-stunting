@@ -15,7 +15,8 @@ class RegisterPage1 extends StatefulWidget {
 }
 
 class _RegisterPage1State extends State<RegisterPage1> {
-  TextEditingController usernameController = TextEditingController();
+  TextEditingController namaController = TextEditingController();
+  TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   @override
   Widget build(BuildContext context) {
@@ -56,13 +57,13 @@ class _RegisterPage1State extends State<RegisterPage1> {
                     runSpacing: spacing * 2,
                     children: [
                       CustomBorderedInput(
-                        controller: usernameController,
+                        controller: namaController,
                         hintText: "Nama Pengguna",
                         onChanged: (e) {},
                         prefixIcon: Ph.user,
                       ),
                       CustomBorderedInput(
-                        controller: usernameController,
+                        controller: emailController,
                         hintText: "Email",
                         onChanged: (e) {},
                         prefixIcon: Ph.envelope_simple,
@@ -78,20 +79,6 @@ class _RegisterPage1State extends State<RegisterPage1> {
                     ],
                   ),
                 ],
-              ),
-              InkWell(
-                onTap: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => const RegisterPage2()),
-                ),
-                child: Text(
-                  'Kalo ini bisa',
-                  style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                        color: primary500,
-                        fontWeight: FontWeight.w500,
-                      ),
-                ),
               ),
               PrimaryButton(
                 onPressed: () => Navigator.push(
