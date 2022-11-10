@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_stunting/widgets/button/custom_back_button.dart';
 import 'package:flutter_stunting/commons/globals.dart';
 import 'package:flutter_stunting/widgets/button/primary_button.dart';
+import 'package:flutter_stunting/widgets/dialog/success_dialog.dart';
 import 'package:flutter_stunting/widgets/input/custom_bordered_input.dart';
 import 'package:iconify_flutter/icons/ph.dart';
 
@@ -95,8 +96,8 @@ class _RegisterPage2State extends State<RegisterPage2> {
                 onPressed: () {
                   showDialog(
                     context: context,
-                    builder: (BuildContext context) =>
-                        _buildPopupDialog(context),
+                    builder: (BuildContext context) => SuccessDialog(
+                        onPressed: () => {Navigator.of(context).pop()}),
                   );
                 },
                 title: 'Daftar',
@@ -112,25 +113,4 @@ class _RegisterPage2State extends State<RegisterPage2> {
       ),
     );
   }
-}
-
-Widget _buildPopupDialog(BuildContext context) {
-  return new AlertDialog(
-    title: const Text('Popup example'),
-    content: new Column(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: <Widget>[
-        Text("Hello"),
-      ],
-    ),
-    actions: <Widget>[
-      // new ElevatedButton(
-      //   onPressed: () {
-      //     Navigator.of(context).pop();
-      //   },
-      //   child: const Text('Close'),
-      // ),
-    ],
-  );
 }
