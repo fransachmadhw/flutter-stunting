@@ -57,6 +57,7 @@ class CustomBorderedInput extends StatelessWidget {
               .bodyMedium!
               .copyWith(color: neutral200),
           border: InputBorder.none,
+          contentPadding: const EdgeInsets.all(20.0),
         ),
       ),
     );

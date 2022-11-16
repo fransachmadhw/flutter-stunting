@@ -27,8 +27,8 @@ class SocialButton extends StatelessWidget {
         shape: MaterialStateProperty.all(
           RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(radius * 10),
-            side: BorderSide(
-              color: neutral100,
+            side: const BorderSide(
+              color: neutral50,
               width: 1,
             ),
           ),
