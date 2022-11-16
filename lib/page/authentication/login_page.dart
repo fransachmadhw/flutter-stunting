@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_stunting/commons/globals.dart';
 import 'package:flutter_stunting/page/authentication/register_page_1.dart';
 import 'package:flutter_stunting/widgets/button/primary_button.dart';
+import 'package:flutter_stunting/widgets/button/social_button.dart';
 import 'package:flutter_stunting/widgets/input/custom_bordered_input.dart';
 import 'package:iconify_flutter/icons/ph.dart';
 
@@ -72,8 +73,40 @@ class _LoginPageState extends State<LoginPage> {
                 const SizedBox(height: spacing * 6),
                 PrimaryButton(
                   onPressed: () {},
-                  title: 'Login',
+                  title: 'Masuk',
                   type: ButtonType.primary,
+                ),
+                SizedBox(
+                  height: spacing * 2,
+                ),
+                Text('Atau dengan',
+                    textAlign: TextAlign.center,
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodySmall!
+                        .copyWith(color: neutral200)),
+                SizedBox(
+                  height: spacing * 2,
+                ),
+                Row(
+                  // crossAxisAlignment: CrossAxisAlignment.stretch,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    SocialButton(
+                        onPressed: () {},
+                        image: 'assets/images/facebook.png',
+                        size: 24),
+                    SizedBox(width: spacing * 2),
+                    SocialButton(
+                        onPressed: () {},
+                        image: 'assets/images/google.png',
+                        size: 24),
+                    SizedBox(width: spacing * 2),
+                    SocialButton(
+                        onPressed: () {},
+                        image: 'assets/images/twitter.png',
+                        size: 24),
+                  ],
                 ),
                 const SizedBox(height: spacing * 6),
                 Row(
