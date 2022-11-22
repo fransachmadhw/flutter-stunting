@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "615325334845",
+    "firebase_url": "https://stunting-82aaf-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "stunting-82aaf",
+    "storage_bucket": "stunting-82aaf.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:615325334845:android:48866bc74ebe2da5f45954",
+        "android_client_info": {
+          "package_name": "com.example.flutter_stunting"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "615325334845-neivfosnoaiqioint2f5im0mik8jsj5u.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.flutter_stunting",
+            "certificate_hash": "31834c874552dceff5208e82016f528b80d127d2"
+          }
+        },
+        {
+          "client_id": "615325334845-hauomtdsgm6to97kk5lh0utb963dnn00.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAfwkxDrWIPmuL9Y0k83crVvp6JNHG9DCQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "615325334845-hauomtdsgm6to97kk5lh0utb963dnn00.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

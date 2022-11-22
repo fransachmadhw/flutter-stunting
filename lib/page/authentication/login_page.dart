@@ -1,11 +1,15 @@
-import 'package:flutter/cupertino.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_stunting/commons/globals.dart';
+import 'package:flutter_stunting/data/model/user_model.dart';
 import 'package:flutter_stunting/page/authentication/register_page_1.dart';
+import 'package:flutter_stunting/page/main/home_page.dart';
 import 'package:flutter_stunting/widgets/button/primary_button.dart';
 import 'package:flutter_stunting/widgets/button/social_button.dart';
 import 'package:flutter_stunting/widgets/input/custom_bordered_input.dart';
 import 'package:iconify_flutter/icons/ph.dart';
+
+import 'package:google_sign_in/google_sign_in.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -17,6 +21,59 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   TextEditingController usernameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+
+  Future googleSignIn() async {
+    final GoogleSignInAccount? user = await GoogleSignIn().signIn();
+
+    if (user != null) {
+      final GoogleSignInAuthentication auth = await user.authentication;
+
+      final credential = GoogleAuthProvider.credential(
+        accessToken: auth.accessToken,
+        idToken: auth.idToken,
+      );
+
+      await FirebaseAuth.instance.signInWithCredential(credential);
+      var data = UserModel(user.displayName.toString());
+      goToHome(data);
+    }
+  }
+
+  // Future twitterSignIn() async {
+  // final twitterLogin = new TwitterLogin(
+  //     apiKey: apiKey, apiSecretKey: apiSecretKey, redirectURI: redirectURI);
+  // }
+
+  Future facebookSignIn() async {}
+
+  Future isSignedIn() async {
+    FirebaseAuth.instance.authStateChanges().listen((User? user) {
+      if (user != null) {
+        var data = UserModel(user.displayName.toString());
+        goToHome(data);
+      }
+    });
+  }
+
+  Future logout() async {
+    await GoogleSignIn().disconnect();
+    FirebaseAuth.instance.signOut();
+  }
+
+  void goToHome(UserModel user) {
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (context) => HomePage(user: user),
+      ),
+    );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    isSignedIn();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -76,18 +133,14 @@ class _LoginPageState extends State<LoginPage> {
                   title: 'Masuk',
                   type: ButtonType.primary,
                 ),
-                SizedBox(
-                  height: spacing * 2,
-                ),
+                const SizedBox(height: spacing * 2),
                 Text('Atau dengan',
                     textAlign: TextAlign.center,
                     style: Theme.of(context)
                         .textTheme
                         .bodySmall!
                         .copyWith(color: neutral200)),
-                SizedBox(
-                  height: spacing * 2,
-                ),
+                const SizedBox(height: spacing * 2),
                 Row(
                   // crossAxisAlignment: CrossAxisAlignment.stretch,
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -96,12 +149,12 @@ class _LoginPageState extends State<LoginPage> {
                         onPressed: () {},
                         image: 'assets/images/facebook.png',
                         size: 24),
-                    SizedBox(width: spacing * 2),
+                    const SizedBox(width: spacing * 2),
                     SocialButton(
-                        onPressed: () {},
+                        onPressed: () => googleSignIn(),
                         image: 'assets/images/google.png',
                         size: 24),
-                    SizedBox(width: spacing * 2),
+                    const SizedBox(width: spacing * 2),
                     SocialButton(
                         onPressed: () {},
                         image: 'assets/images/twitter.png',

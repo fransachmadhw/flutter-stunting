@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_stunting/widgets/button/custom_back_button.dart';
 import 'package:flutter_stunting/commons/globals.dart';
@@ -25,7 +24,7 @@ class _RegisterPage2State extends State<RegisterPage2> {
     return Scaffold(
       body: SafeArea(
         child: Container(
-          padding: EdgeInsets.symmetric(
+          padding: const EdgeInsets.symmetric(
               horizontal: spacing * 3, vertical: spacing * 3),
           width: MediaQuery.of(context).size.width,
           child: Column(
@@ -35,8 +34,8 @@ class _RegisterPage2State extends State<RegisterPage2> {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  CustomBackButton(),
-                  SizedBox(height: spacing * 2),
+                  const CustomBackButton(),
+                  const SizedBox(height: spacing * 2),
                   Text('Data Personal',
                       textAlign: TextAlign.left,
                       style: Theme.of(context).textTheme.headlineSmall),
@@ -52,7 +51,7 @@ class _RegisterPage2State extends State<RegisterPage2> {
                             .bodySmall!
                             .copyWith(color: neutral200)),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: spacing * 1,
                   ),
                   Wrap(
