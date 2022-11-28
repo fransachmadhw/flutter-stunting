@@ -10,6 +10,7 @@ import 'package:iconify_flutter/icons/ph.dart';
 
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
+import 'package:twitter_login/twitter_login.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -43,10 +44,57 @@ class _LoginPageState extends State<LoginPage> {
     }
   }
 
-  // Future twitterSignIn() async {
-  // final twitterLogin = new TwitterLogin(
-  //     apiKey: apiKey, apiSecretKey: apiSecretKey, redirectURI: redirectURI);
-  // }
+  Future loginV2() async {
+    final twitterLogin = TwitterLogin(
+        apiKey: '',
+        apiSecretKey: '',
+        // redirectURI: 'https://stunting-82aaf.firebaseapp.com/__/auth/handler');
+        redirectURI: 'stuntingauth://');
+
+    /// Forces the user to enter their credentials
+    /// to ensure the correct users account is authorized.
+    /// If you want to implement Twitter account switching, set [force_login] to true
+    /// login(forceLogin: true);
+    final authResult = await twitterLogin.loginV2();
+    switch (authResult.status) {
+      case TwitterLoginStatus.loggedIn:
+        // success
+        print('====== Login success ======');
+        break;
+      case TwitterLoginStatus.cancelledByUser:
+        // cancel
+        print('====== Login cancel ======');
+        break;
+      case TwitterLoginStatus.error:
+      case null:
+        // error
+        print('====== Login error ======');
+        break;
+    }
+  }
+
+  Future twitterSignIn() async {
+    // Create a TwitterLogin instance
+    final twitterLogin = new TwitterLogin(
+        apiKey: '',
+        apiSecretKey: '',
+        // redirectURI: 'https://stunting-82aaf.firebaseapp.com/__/auth/handler');
+        redirectURI: 'stuntingauth://');
+
+    // Trigger the sign-in flow
+    final authResult = await twitterLogin.login();
+
+    // Create a credential from the access token
+    final twitterAuthCredential = TwitterAuthProvider.credential(
+      accessToken: authResult.authToken!,
+      secret: authResult.authTokenSecret!,
+    );
+
+    // Once signed in, return the UserCredential
+    // return await FirebaseAuth.instance.signInWithCredential(twitterAuthCredential);
+    await FirebaseAuth.instance.signInWithCredential(twitterAuthCredential);
+    goToHome();
+  }
 
   Future facebookSignIn() async {
     try {
@@ -163,7 +211,9 @@ class _LoginPageState extends State<LoginPage> {
                         size: 24),
                     const SizedBox(width: spacing * 2),
                     SocialButton(
-                        onPressed: () {},
+                        onPressed: () async {
+                          await loginV2();
+                        },
                         image: 'assets/images/twitter.png',
                         size: 24),
                   ],
