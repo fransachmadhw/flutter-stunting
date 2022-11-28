@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:flutter_stunting/commons/globals.dart';
 import 'package:flutter_stunting/data/model/user_model.dart';
 import 'package:flutter_stunting/page/authentication/login_page.dart';
@@ -7,16 +8,23 @@ import 'package:flutter_stunting/widgets/button/primary_button.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({super.key, this.user});
-  final UserModel? user;
+  const HomePage({super.key});
+  // final UserModel? user;
   @override
   State<StatefulWidget> createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
+  var userName = '';
+
   Future logout() async {
-    await GoogleSignIn().disconnect();
-    FirebaseAuth.instance.signOut();
+    await FirebaseAuth.instance.signOut();
+    if (GoogleSignIn().currentUser != null) {
+      await GoogleSignIn().disconnect();
+    }
+    if (await FacebookAuth.instance.accessToken != null) {
+      await FacebookAuth.instance.logOut();
+    }
     goToLogin();
   }
 
@@ -29,6 +37,19 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
+  void getUserName() async {
+    final isSigned = await FirebaseAuth.instance.currentUser;
+    setState(() {
+      userName = isSigned!.displayName.toString();
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getUserName();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -39,8 +60,7 @@ class _HomePageState extends State<HomePage> {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Text(
-                  'Selamat Datang! ${widget.user != null ? widget.user?.name : ''}',
+              Text('Selamat Datang! ${userName != '' ? userName : ''}',
                   textAlign: TextAlign.center,
                   style: Theme.of(context).textTheme.headlineSmall),
               const SizedBox(height: spacing * 4),

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Stunting</string>
+    <string name="facebook_app_id">1821410428204752</string>
+    <string name="fb_login_protocol_scheme">fb1821410428204752</string>
+    <string name="facebook_client_token">80ae880852857015d132fb439f705eff</string>
+</resources>
+

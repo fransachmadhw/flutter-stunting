@@ -1,7 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_stunting/commons/globals.dart';
-import 'package:flutter_stunting/data/model/user_model.dart';
 import 'package:flutter_stunting/page/authentication/register_page_1.dart';
 import 'package:flutter_stunting/page/main/home_page.dart';
 import 'package:flutter_stunting/widgets/button/primary_button.dart';
@@ -10,6 +9,7 @@ import 'package:flutter_stunting/widgets/input/custom_bordered_input.dart';
 import 'package:iconify_flutter/icons/ph.dart';
 
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -23,19 +23,23 @@ class _LoginPageState extends State<LoginPage> {
   TextEditingController passwordController = TextEditingController();
 
   Future googleSignIn() async {
-    final GoogleSignInAccount? user = await GoogleSignIn().signIn();
+    try {
+      isSignedIn();
+      final GoogleSignInAccount? user = await GoogleSignIn().signIn();
 
-    if (user != null) {
-      final GoogleSignInAuthentication auth = await user.authentication;
+      if (user != null) {
+        final GoogleSignInAuthentication auth = await user.authentication;
 
-      final credential = GoogleAuthProvider.credential(
-        accessToken: auth.accessToken,
-        idToken: auth.idToken,
-      );
+        final credential = GoogleAuthProvider.credential(
+          accessToken: auth.accessToken,
+          idToken: auth.idToken,
+        );
 
-      await FirebaseAuth.instance.signInWithCredential(credential);
-      var data = UserModel(user.displayName.toString());
-      goToHome(data);
+        await FirebaseAuth.instance.signInWithCredential(credential);
+        goToHome();
+      }
+    } catch (e) {
+      print("Error :: $e");
     }
   }
 
@@ -44,27 +48,30 @@ class _LoginPageState extends State<LoginPage> {
   //     apiKey: apiKey, apiSecretKey: apiSecretKey, redirectURI: redirectURI);
   // }
 
-  Future facebookSignIn() async {}
-
-  Future isSignedIn() async {
-    FirebaseAuth.instance.authStateChanges().listen((User? user) {
-      if (user != null) {
-        var data = UserModel(user.displayName.toString());
-        goToHome(data);
-      }
-    });
+  Future facebookSignIn() async {
+    try {
+      final loginResult = await FacebookAuth.instance.login();
+      final OAuthCredential facebookAuth =
+          FacebookAuthProvider.credential(loginResult.accessToken!.token);
+      await FirebaseAuth.instance.signInWithCredential(facebookAuth);
+      goToHome();
+    } catch (e) {
+      print("Error :: $e");
+    }
   }
 
-  Future logout() async {
-    await GoogleSignIn().disconnect();
-    FirebaseAuth.instance.signOut();
+  void isSignedIn() async {
+    final isSigned = await FirebaseAuth.instance.currentUser;
+    if (isSigned != null) {
+      goToHome();
+    }
   }
 
-  void goToHome(UserModel user) {
+  void goToHome() {
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(
-        builder: (context) => HomePage(user: user),
+        builder: (context) => const HomePage(),
       ),
     );
   }
@@ -146,7 +153,7 @@ class _LoginPageState extends State<LoginPage> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     SocialButton(
-                        onPressed: () {},
+                        onPressed: () => facebookSignIn(),
                         image: 'assets/images/facebook.png',
                         size: 24),
                     const SizedBox(width: spacing * 2),
