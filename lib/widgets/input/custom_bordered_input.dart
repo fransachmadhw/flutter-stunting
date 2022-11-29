@@ -5,13 +5,13 @@ import 'package:iconify_flutter/iconify_flutter.dart';
 class CustomBorderedInput extends StatelessWidget {
   final bool? isPassword;
   final ValueChanged<String> onChanged;
-  final TextEditingController controller;
+  final TextEditingController? controller;
   final String? suffixIcon, prefixIcon, hintText;
 
   const CustomBorderedInput(
       {super.key,
       required this.onChanged,
-      required this.controller,
+      this.controller,
       this.suffixIcon,
       this.prefixIcon,
       this.hintText,

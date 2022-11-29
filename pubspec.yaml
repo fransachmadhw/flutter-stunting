@@ -16,6 +16,8 @@ dependencies:
   firebase_core: ^2.3.0
   twitter_login: ^4.2.3
   flutter_facebook_auth: ^5.0.6
+  cloud_firestore: ^4.1.0
+  shared_preferences: ^2.0.15
 
 dev_dependencies:
   flutter_test:

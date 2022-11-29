@@ -7,24 +7,27 @@ class PrimaryButton extends StatelessWidget {
   final String title;
   final Enum type;
   final Function onPressed;
+  final bool isLoading;
 
   const PrimaryButton(
       {super.key,
       required this.onPressed,
       required this.title,
-      required this.type});
+      required this.type,
+      required this.isLoading});
 
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(
-      onPressed: () => onPressed(),
+      onPressed: () =>
+          !isLoading ? onPressed() : {}, // prevent click when state is loading
       style: ButtonStyle(
         elevation: MaterialStateProperty.all(0),
         backgroundColor: MaterialStateProperty.all(
           type == ButtonType.primary ? primary500 : white,
         ),
         padding: MaterialStateProperty.all(
-          const EdgeInsets.symmetric(vertical: spacing * 3),
+          const EdgeInsets.symmetric(vertical: spacing * 2),
         ),
         shape: MaterialStateProperty.all(
           RoundedRectangleBorder(
@@ -36,13 +39,19 @@ class PrimaryButton extends StatelessWidget {
           ),
         ),
       ),
-      child: Text(
-        title,
-        style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-              color: type == ButtonType.primary ? white : primary500,
-              fontWeight: FontWeight.w500,
+      child: isLoading
+          ? const SizedBox(
+              width: spacing * 3,
+              height: spacing * 3,
+              child: CircularProgressIndicator(color: white),
+            )
+          : Text(
+              title,
+              style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                    color: type == ButtonType.primary ? white : primary500,
+                    fontWeight: FontWeight.w500,
+                  ),
             ),
-      ),
     );
   }
 }

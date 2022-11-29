@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
@@ -6,7 +8,7 @@ import 'package:flutter_stunting/data/model/user_model.dart';
 import 'package:flutter_stunting/page/authentication/login_page.dart';
 import 'package:flutter_stunting/widgets/button/primary_button.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:twitter_login/twitter_login.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -39,21 +41,17 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  void getUserName() async {
-    final isSigned = await FirebaseAuth.instance.currentUser;
-    if (isSigned != null) {
-      setState(() {
-        userName = isSigned!.displayName.toString();
-      });
-    } else {
-      goToLogin();
-    }
+  Future<dynamic> getUserData() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    UserModel user =
+        UserModel.fromJson(json.decode(prefs.getString("user_data")!));
+    print(user.fullName);
   }
 
   @override
   void initState() {
     super.initState();
-    getUserName();
+    getUserData();
   }
 
   @override
@@ -66,11 +64,14 @@ class _HomePageState extends State<HomePage> {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Text('Selamat Datang! ${userName != '' ? userName : ''}',
-                  textAlign: TextAlign.center,
-                  style: Theme.of(context).textTheme.headlineSmall),
+              Text(
+                'Selamat Datang!',
+                textAlign: TextAlign.center,
+                style: Theme.of(context).textTheme.headlineSmall,
+              ),
               const SizedBox(height: spacing * 4),
               PrimaryButton(
+                  isLoading: false,
                   onPressed: () => logout(),
                   title: 'Sign Out',
                   type: ButtonType.primary)
