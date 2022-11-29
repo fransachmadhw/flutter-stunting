@@ -45,31 +45,40 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Future loginV2() async {
-    final twitterLogin = TwitterLogin(
-        apiKey: '',
-        apiSecretKey: '',
-        // redirectURI: 'https://stunting-82aaf.firebaseapp.com/__/auth/handler');
-        redirectURI: 'stuntingauth://');
+    try {
+      final twitterLogin = TwitterLogin(
+          apiKey: 'kCywTm6nwsiFYYB3ONufkVaMw',
+          apiSecretKey: 'tUKnkYT42KdtLNqLTWu37I9LXGgfVBl8dHgxW8ZNMpndwh96Iz',
+          // redirectURI: 'https://stunting-82aaf.firebaseapp.com/__/auth/handler');
+          redirectURI: 'flutterstunting://');
 
-    /// Forces the user to enter their credentials
-    /// to ensure the correct users account is authorized.
-    /// If you want to implement Twitter account switching, set [force_login] to true
-    /// login(forceLogin: true);
-    final authResult = await twitterLogin.loginV2();
-    switch (authResult.status) {
-      case TwitterLoginStatus.loggedIn:
-        // success
-        print('====== Login success ======');
-        break;
-      case TwitterLoginStatus.cancelledByUser:
-        // cancel
-        print('====== Login cancel ======');
-        break;
-      case TwitterLoginStatus.error:
-      case null:
-        // error
-        print('====== Login error ======');
-        break;
+      /// Forces the user to enter their credentials
+      /// to ensure the correct users account is authorized.
+      /// If you want to implement Twitter account switching, set [force_login] to true
+      /// login(forceLogin: true);
+      final authResult = await twitterLogin.loginV2();
+      switch (authResult.status) {
+        case TwitterLoginStatus.loggedIn:
+          final twitterAuthCredential = TwitterAuthProvider.credential(
+            accessToken: authResult.authToken!,
+            secret: authResult.authTokenSecret!,
+          );
+          await FirebaseAuth.instance
+              .signInWithCredential(twitterAuthCredential);
+          goToHome();
+          break;
+        case TwitterLoginStatus.cancelledByUser:
+          // cancel
+          print('====== Login cancel ======');
+          break;
+        case TwitterLoginStatus.error:
+        case null:
+          // error
+          print('====== Login error ======');
+          break;
+      }
+    } catch (e) {
+      print("Err :: $e");
     }
   }
 

@@ -6,6 +6,7 @@ import 'package:flutter_stunting/data/model/user_model.dart';
 import 'package:flutter_stunting/page/authentication/login_page.dart';
 import 'package:flutter_stunting/widgets/button/primary_button.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:twitter_login/twitter_login.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -25,6 +26,7 @@ class _HomePageState extends State<HomePage> {
     if (await FacebookAuth.instance.accessToken != null) {
       await FacebookAuth.instance.logOut();
     }
+
     goToLogin();
   }
 
@@ -39,9 +41,13 @@ class _HomePageState extends State<HomePage> {
 
   void getUserName() async {
     final isSigned = await FirebaseAuth.instance.currentUser;
-    setState(() {
-      userName = isSigned!.displayName.toString();
-    });
+    if (isSigned != null) {
+      setState(() {
+        userName = isSigned!.displayName.toString();
+      });
+    } else {
+      goToLogin();
+    }
   }
 
   @override
