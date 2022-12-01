@@ -37,7 +37,6 @@
                 <!-- Accepts URIs that begin with "example://gizmos” -->
                 <!-- Registered Callback URLs in TwitterApp -->
                 <data
-                    android:host=""
                     android:scheme="flutterstunting" /> <!-- host is option -->
             </intent-filter>
         </activity>

@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
@@ -7,7 +9,7 @@ import 'package:flutter_stunting/page/authentication/login_page.dart';
 import 'package:flutter_stunting/widgets/button/primary_button.dart';
 import 'package:flutter_stunting/widgets/inkwell/news_inkwell.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:twitter_login/twitter_login.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -19,42 +21,39 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   var userName = '';
 
-  Future logout() async {
-    await FirebaseAuth.instance.signOut();
-    if (GoogleSignIn().currentUser != null) {
-      await GoogleSignIn().disconnect();
-    }
-    if (await FacebookAuth.instance.accessToken != null) {
-      await FacebookAuth.instance.logOut();
-    }
+  // Future logout() async {
+  //   await FirebaseAuth.instance.signOut();
+  //   if (GoogleSignIn().currentUser != null) {
+  //     await GoogleSignIn().disconnect();
+  //   }
+  //   if (await FacebookAuth.instance.accessToken != null) {
+  //     await FacebookAuth.instance.logOut();
+  //   }
 
-    goToLogin();
-  }
+  //   goToLogin();
+  // }
 
-  void goToLogin() {
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(
-        builder: (context) => const LoginPage(),
-      ),
-    );
-  }
+  // void goToLogin() {
+  //   Navigator.pushReplacement(
+  //     context,
+  //     MaterialPageRoute(
+  //       builder: (context) => const LoginPage(),
+  //     ),
+  //   );
+  // }
 
-  void getUserName() async {
-    final isSigned = await FirebaseAuth.instance.currentUser;
-    if (isSigned != null) {
-      setState(() {
-        userName = isSigned!.displayName.toString();
-      });
-    } else {
-      goToLogin();
-    }
-  }
+  // Future<dynamic> getUserData() async {
+  //   final SharedPreferences prefs = await SharedPreferences.getInstance();
+  //   UserModel user =
+  //       UserModel.fromJson(json.decode(prefs.getString("user_data")!));
+  //   print(user.fullName);
+  // }
 
   @override
   void initState() {
     super.initState();
     // getUserName();
+    // getUserData();
   }
 
   @override
@@ -115,6 +114,17 @@ class _HomePageState extends State<HomePage> {
               //     style: Theme.of(context).textTheme.headlineSmall),
               // const SizedBox(height: spacing * 4),
               // PrimaryButton(
+              //     onPressed: () => logout(),
+              //     title: 'Sign Out',
+              //     type: ButtonType.primary)
+              // Text(
+              //   'Selamat Datang!',
+              //   textAlign: TextAlign.center,
+              //   style: Theme.of(context).textTheme.headlineSmall,
+              // ),
+              // const SizedBox(height: spacing * 4),
+              // PrimaryButton(
+              //     isLoading: false,
               //     onPressed: () => logout(),
               //     title: 'Sign Out',
               //     type: ButtonType.primary)

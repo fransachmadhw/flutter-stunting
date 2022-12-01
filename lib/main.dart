@@ -2,7 +2,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_stunting/commons/custom_text_theme.dart';
 import 'package:flutter_stunting/commons/globals.dart';
-import 'package:flutter_stunting/page/authentication/splash_screen.dart';
+import 'package:flutter_stunting/page/authentication/login_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -27,7 +27,7 @@ class MyApp extends StatelessWidget {
               secondary: primary300,
             ),
       ),
-      home: const SplashScreen(),
+      home: const LoginPage(),
     );
   }
 }

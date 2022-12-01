@@ -1,7 +1,15 @@
+import 'dart:convert';
+import 'dart:math';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_stunting/commons/globals.dart';
+import 'package:flutter_stunting/data/model/user_model.dart';
 import 'package:flutter_stunting/page/authentication/register_page_1.dart';
+import 'package:flutter_stunting/page/authentication/register_page_2.dart';
 import 'package:flutter_stunting/page/main/home_page.dart';
 import 'package:flutter_stunting/widgets/button/primary_button.dart';
 import 'package:flutter_stunting/widgets/button/social_button.dart';
@@ -10,6 +18,7 @@ import 'package:iconify_flutter/icons/ph.dart';
 
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:twitter_login/twitter_login.dart';
 
 class LoginPage extends StatefulWidget {
@@ -20,108 +29,128 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  TextEditingController usernameController = TextEditingController();
+  TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+  final db = FirebaseFirestore.instance;
+  String errMsg = '';
+  bool isLoading = false;
 
   Future googleSignIn() async {
-    try {
-      isSignedIn();
-      final GoogleSignInAccount? user = await GoogleSignIn().signIn();
+    toggleLoading();
+    isSignedIn();
+    final GoogleSignInAccount? user = await GoogleSignIn().signIn();
 
-      if (user != null) {
-        final GoogleSignInAuthentication auth = await user.authentication;
+    if (user != null) {
+      final GoogleSignInAuthentication auth = await user.authentication;
 
-        final credential = GoogleAuthProvider.credential(
-          accessToken: auth.accessToken,
-          idToken: auth.idToken,
-        );
+      final credential = GoogleAuthProvider.credential(
+        accessToken: auth.accessToken,
+        idToken: auth.idToken,
+      );
 
-        await FirebaseAuth.instance.signInWithCredential(credential);
-        goToHome();
-      }
-    } catch (e) {
-      print("Error :: $e");
+      await FirebaseAuth.instance.signInWithCredential(credential);
+      verifyData(FirebaseAuth.instance.currentUser!.email.toString());
     }
-  }
-
-  Future loginV2() async {
-    try {
-      final twitterLogin = TwitterLogin(
-          apiKey: 'kCywTm6nwsiFYYB3ONufkVaMw',
-          apiSecretKey: 'tUKnkYT42KdtLNqLTWu37I9LXGgfVBl8dHgxW8ZNMpndwh96Iz',
-          // redirectURI: 'https://stunting-82aaf.firebaseapp.com/__/auth/handler');
-          redirectURI: 'flutterstunting://');
-
-      /// Forces the user to enter their credentials
-      /// to ensure the correct users account is authorized.
-      /// If you want to implement Twitter account switching, set [force_login] to true
-      /// login(forceLogin: true);
-      final authResult = await twitterLogin.loginV2();
-      switch (authResult.status) {
-        case TwitterLoginStatus.loggedIn:
-          final twitterAuthCredential = TwitterAuthProvider.credential(
-            accessToken: authResult.authToken!,
-            secret: authResult.authTokenSecret!,
-          );
-          await FirebaseAuth.instance
-              .signInWithCredential(twitterAuthCredential);
-          goToHome();
-          break;
-        case TwitterLoginStatus.cancelledByUser:
-          // cancel
-          print('====== Login cancel ======');
-          break;
-        case TwitterLoginStatus.error:
-        case null:
-          // error
-          print('====== Login error ======');
-          break;
-      }
-    } catch (e) {
-      print("Err :: $e");
-    }
+    toggleLoading();
   }
 
   Future twitterSignIn() async {
-    // Create a TwitterLogin instance
-    final twitterLogin = new TwitterLogin(
-        apiKey: '',
-        apiSecretKey: '',
-        // redirectURI: 'https://stunting-82aaf.firebaseapp.com/__/auth/handler');
-        redirectURI: 'stuntingauth://');
-
-    // Trigger the sign-in flow
-    final authResult = await twitterLogin.login();
-
-    // Create a credential from the access token
-    final twitterAuthCredential = TwitterAuthProvider.credential(
-      accessToken: authResult.authToken!,
-      secret: authResult.authTokenSecret!,
+    toggleLoading();
+    final twitterLogin = TwitterLogin(
+      apiKey: 'kCywTm6nwsiFYYB3ONufkVaMw',
+      apiSecretKey: 'tUKnkYT42KdtLNqLTWu37I9LXGgfVBl8dHgxW8ZNMpndwh96Iz',
+      redirectURI: 'flutterstunting://',
     );
 
-    // Once signed in, return the UserCredential
-    // return await FirebaseAuth.instance.signInWithCredential(twitterAuthCredential);
-    await FirebaseAuth.instance.signInWithCredential(twitterAuthCredential);
-    goToHome();
+    final authResult = await twitterLogin.loginV2();
+    switch (authResult.status) {
+      case TwitterLoginStatus.loggedIn:
+        final twitterAuthCredential = TwitterAuthProvider.credential(
+          accessToken: authResult.authToken!,
+          secret: authResult.authTokenSecret!,
+        );
+        await FirebaseAuth.instance.signInWithCredential(twitterAuthCredential);
+        toggleLoading();
+        verifyData(FirebaseAuth.instance.currentUser!.email.toString());
+        break;
+      case TwitterLoginStatus.cancelledByUser:
+        setState(() {
+          errMsg = 'Twitter login cancelled';
+        });
+        toggleLoading();
+        break;
+      case TwitterLoginStatus.error:
+      case null:
+        setState(() {
+          errMsg = 'Error on twitter login';
+        });
+        toggleLoading();
+        break;
+    }
   }
 
   Future facebookSignIn() async {
+    toggleLoading();
+    final loginResult = await FacebookAuth.instance.login();
+    final OAuthCredential facebookAuth =
+        FacebookAuthProvider.credential(loginResult.accessToken!.token);
+    await FirebaseAuth.instance.signInWithCredential(facebookAuth);
+    toggleLoading();
+    verifyData(FirebaseAuth.instance.currentUser!.email.toString());
+  }
+
+  Future _emailLogin() async {
     try {
-      final loginResult = await FacebookAuth.instance.login();
-      final OAuthCredential facebookAuth =
-          FacebookAuthProvider.credential(loginResult.accessToken!.token);
-      await FirebaseAuth.instance.signInWithCredential(facebookAuth);
-      goToHome();
-    } catch (e) {
-      print("Error :: $e");
+      toggleLoading();
+      formValidate();
+
+      if (errMsg != "") return;
+      await FirebaseAuth.instance.signInWithEmailAndPassword(
+          email: emailController.text, password: passwordController.text);
+      verifyData(emailController.text);
+
+      toggleLoading();
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'user-not-found') {
+        setErr("User with email ${emailController.text} is not found");
+      } else if (e.code == 'wrong-password') {
+        setErr("Password is incorrect");
+      } else {
+        setErr("Server Error");
+      }
+      toggleLoading();
+    }
+  }
+
+  void formValidate() {
+    if (emailController.text == '') {
+      setErr("Mohon inputkan email anda");
+    } else if (!emailController.text.contains("@")) {
+      setErr("Email tidak valid");
+    } else if (passwordController.text == '') {
+      setErr("Mohon inputkan password anda");
+    } else {
+      setErr("");
     }
   }
 
   void isSignedIn() async {
     final isSigned = await FirebaseAuth.instance.currentUser;
     if (isSigned != null) {
-      goToHome();
+      verifyData(isSigned.email.toString());
     }
+  }
+
+  void setErr(String value) {
+    setState(() {
+      errMsg = value;
+    });
+  }
+
+  void toggleLoading() {
+    setState(() {
+      isLoading = !isLoading;
+    });
   }
 
   void goToHome() {
@@ -131,6 +160,32 @@ class _LoginPageState extends State<LoginPage> {
         builder: (context) => const HomePage(),
       ),
     );
+  }
+
+  void goToRegister(String email) {
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (context) => RegisterPage2(email: email),
+      ),
+    );
+  }
+
+  void verifyData(String email) async {
+    DocumentSnapshot snapshot = await db.collection("users").doc(email).get();
+    dynamic userData = snapshot.data();
+    if (userData != null) {
+      UserModel user = UserModel.fromJson(userData);
+      saveUserData(user);
+      goToHome();
+    } else {
+      goToRegister(email);
+    }
+  }
+
+  void saveUserData(UserModel user) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString("user_data", json.encode(user));
   }
 
   @override
@@ -166,7 +221,7 @@ class _LoginPageState extends State<LoginPage> {
                   runSpacing: spacing * 2,
                   children: [
                     CustomBorderedInput(
-                      controller: usernameController,
+                      controller: emailController,
                       hintText: "Masukan Username",
                       onChanged: (e) {},
                     ),
@@ -188,12 +243,22 @@ class _LoginPageState extends State<LoginPage> {
                               color: primary500,
                             ),
                       ),
-                    )
+                    ),
                   ],
                 ),
-                const SizedBox(height: spacing * 6),
+                const SizedBox(height: spacing * 2),
+                Text(
+                  errMsg,
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                        fontWeight: FontWeight.w500,
+                        color: red400,
+                      ),
+                ),
+                const SizedBox(height: spacing * 3),
                 PrimaryButton(
-                  onPressed: () {},
+                  isLoading: isLoading,
+                  onPressed: () => _emailLogin(),
                   title: 'Masuk',
                   type: ButtonType.primary,
                 ),
@@ -220,9 +285,7 @@ class _LoginPageState extends State<LoginPage> {
                         size: 24),
                     const SizedBox(width: spacing * 2),
                     SocialButton(
-                        onPressed: () async {
-                          await loginV2();
-                        },
+                        onPressed: () => twitterSignIn(),
                         image: 'assets/images/twitter.png',
                         size: 24),
                   ],
