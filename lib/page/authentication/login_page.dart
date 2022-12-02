@@ -258,7 +258,8 @@ class _LoginPageState extends State<LoginPage> {
                 const SizedBox(height: spacing * 3),
                 PrimaryButton(
                   isLoading: isLoading,
-                  onPressed: () => _emailLogin(),
+                  // onPressed: () => _emailLogin(),
+                  onPressed: () => goToHome(),
                   title: 'Masuk',
                   type: ButtonType.primary,
                 ),
