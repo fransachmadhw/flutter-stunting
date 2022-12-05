@@ -7,6 +7,8 @@ import 'package:flutter_stunting/commons/globals.dart';
 import 'package:flutter_stunting/data/model/user_model.dart';
 import 'package:flutter_stunting/page/authentication/login_page.dart';
 import 'package:flutter_stunting/page/main/bmi_calculator.dart';
+import 'package:flutter_stunting/page/main/edit_data.dart';
+import 'package:flutter_stunting/page/main/feedback_page.dart';
 import 'package:flutter_stunting/page/main/user_profile.dart';
 import 'package:flutter_stunting/widgets/button/dashboard_button.dart';
 import 'package:flutter_stunting/widgets/button/primary_button.dart';
@@ -18,6 +20,9 @@ import 'package:gap/gap.dart';
 import 'package:iconify_flutter/iconify_flutter.dart';
 import 'package:iconify_flutter/icons/mdi.dart';
 import 'package:iconify_flutter/icons/ic.dart';
+import 'package:iconify_flutter/icons/uil.dart';
+import 'package:intl/intl.dart';
+import 'package:intl/date_symbol_data_local.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -29,26 +34,26 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   var userName = '';
 
-  // Future logout() async {
-  //   await FirebaseAuth.instance.signOut();
-  //   if (GoogleSignIn().currentUser != null) {
-  //     await GoogleSignIn().disconnect();
-  //   }
-  //   if (await FacebookAuth.instance.accessToken != null) {
-  //     await FacebookAuth.instance.logOut();
-  //   }
+  Future logout() async {
+    await FirebaseAuth.instance.signOut();
+    if (GoogleSignIn().currentUser != null) {
+      await GoogleSignIn().disconnect();
+    }
+    if (await FacebookAuth.instance.accessToken != null) {
+      await FacebookAuth.instance.logOut();
+    }
 
-  //   goToLogin();
-  // }
+    goToLogin();
+  }
 
-  // void goToLogin() {
-  //   Navigator.pushReplacement(
-  //     context,
-  //     MaterialPageRoute(
-  //       builder: (context) => const LoginPage(),
-  //     ),
-  //   );
-  // }
+  void goToLogin() {
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const LoginPage(),
+      ),
+    );
+  }
 
   // Future<dynamic> getUserData() async {
   //   final SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -62,6 +67,8 @@ class _HomePageState extends State<HomePage> {
     super.initState();
     // getUserName();
     // getUserData();
+    initializeDateFormatting('id_ID', null);
+    Intl.defaultLocale = 'id';
   }
 
   void goToCalculator() {
@@ -78,6 +85,20 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
+  void goToVerifyData() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const EditData()),
+    );
+  }
+
+  void goToFeedback() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const FeedbackPage()),
+    );
+  }
+
   void onTabTapped(int index) {
     setState(() {
       _selectedIndex = index;
@@ -89,9 +110,32 @@ class _HomePageState extends State<HomePage> {
   }
 
   int _selectedIndex = 0;
+  int airPutih = 0;
+
+  void airPutihAdd() {
+    setState(() {
+      airPutih++;
+    });
+  }
+
+  void airPutihReduce() {
+    setState(() {
+      airPutih--;
+    });
+  }
+
+  final dt = DateTime.now();
 
   @override
   Widget build(BuildContext context) {
+    final newDtDay = DateFormat('d').format(dt);
+    var newDtMonth = DateFormat('MMMM').format(dt);
+
+    // if (newDtMonth == 'December') {
+    //   newDtMonth = 'Desember';
+    // }
+
+    // final newDtmonth = DateFormat.MMM().format(dt);
     return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
@@ -113,13 +157,25 @@ class _HomePageState extends State<HomePage> {
                             .textTheme
                             .headlineSmall!
                             .copyWith(fontSize: 18)),
-                    Text('24 November 2022',
-                        textAlign: TextAlign.center,
-                        style: Theme.of(context).textTheme.bodySmall),
+                    Row(
+                      children: [
+                        Iconify(
+                          Ph.calendar_blank,
+                          size: 20,
+                        ),
+                        const Gap(spacing - 4),
+                        Text('$newDtDay $newDtMonth',
+                            textAlign: TextAlign.center,
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodySmall!
+                                .copyWith(fontSize: 14)),
+                      ],
+                    )
                   ],
                 ),
                 SizedBox(
-                  height: spacing,
+                  height: spacing * 2,
                 ),
                 SizedBox(
                   height: 180,
@@ -130,23 +186,27 @@ class _HomePageState extends State<HomePage> {
                       Padding(
                         padding: const EdgeInsets.only(right: spacing),
                         child: NewsInkwell(
+                            imageUrl:
+                                "https://primaya.b-cdn.net/wp-content/uploads/2021/07/Gejala-Stunting-pada-Anak-dan-Pencegahannya.jpg",
+                            destinationUrl:
+                                "https://primayahospital.com/anak/mencegah-anak-stunting/"),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(right: spacing),
+                        child: NewsInkwell(
                           imageUrl:
                               "https://p2ptm.kemkes.go.id/uploads/VHcrbkVobjRzUDN3UCs4eUJ0dVBndz09/2017/stunting_01.png",
+                          destinationUrl:
+                              "https://p2ptm.kemkes.go.id/post/cegah-stunting-dengan-perbaikan-pola-makan-pola-asuh-dan-sanitasi",
                         ),
                       ),
                       Padding(
                         padding: const EdgeInsets.only(right: spacing),
                         child: NewsInkwell(
-                          imageUrl:
-                              "https://primaya.b-cdn.net/wp-content/uploads/2021/07/Gejala-Stunting-pada-Anak-dan-Pencegahannya.jpg",
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(right: spacing),
-                        child: NewsInkwell(
-                          imageUrl:
-                              "https://yankes.kemkes.go.id/img/bg-img/gambarartikel_1661498786_242330.jpg",
-                        ),
+                            imageUrl:
+                                "https://yankes.kemkes.go.id/img/bg-img/gambarartikel_1661498786_242330.jpg",
+                            destinationUrl:
+                                "https://yankes.kemkes.go.id/view_artikel/1388/mengenal-apa-itu-stunting"),
                       ),
                     ],
                   ),
@@ -166,12 +226,12 @@ class _HomePageState extends State<HomePage> {
                   children: [
                     Column(
                       children: [
-                        const SizedBox(
+                        SizedBox(
                           width: 80,
                           height: 80,
                           child: DashboardButton(
-                            icon: Ic.outline_system_security_update_good,
-                          ),
+                              icon: Ic.outline_system_security_update_good,
+                              onPressed: () => goToVerifyData()),
                         ),
                         const Gap(spacing),
                         Text(
@@ -187,12 +247,12 @@ class _HomePageState extends State<HomePage> {
                     const Gap(spacing * 2),
                     Column(
                       children: [
-                        const SizedBox(
+                        SizedBox(
                           width: 80,
                           height: 80,
                           child: DashboardButton(
-                            icon: Ic.outline_help_outline,
-                          ),
+                              icon: Ic.outline_help_outline,
+                              onPressed: () => {}),
                         ),
                         const Gap(spacing),
                         Text(
@@ -208,12 +268,12 @@ class _HomePageState extends State<HomePage> {
                     const Gap(spacing * 2),
                     Column(
                       children: [
-                        const SizedBox(
+                        SizedBox(
                           width: 80,
                           height: 80,
                           child: DashboardButton(
-                            icon: Ic.outline_create,
-                          ),
+                              icon: Ic.outline_create,
+                              onPressed: () => goToFeedback()),
                         ),
                         const Gap(spacing),
                         Text(
@@ -260,7 +320,7 @@ class _HomePageState extends State<HomePage> {
                 Padding(
                   padding: const EdgeInsets.only(left: 0, right: 0),
                   child: Container(
-                    padding: const EdgeInsets.all(spacing * 2),
+                    padding: const EdgeInsets.all(spacing * 3),
                     height: 180,
                     decoration: BoxDecoration(
                         color: white,
@@ -276,6 +336,81 @@ class _HomePageState extends State<HomePage> {
                               blurRadius: 25,
                               offset: Offset(0, 10))
                         ]),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text("Berat",
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .titleLarge!
+                                    .copyWith(
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.w500,
+                                        letterSpacing: 0.3)),
+                            Text("206.8 lbs",
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .titleLarge!
+                                    .copyWith(
+                                        fontSize: 24,
+                                        fontWeight: FontWeight.w600,
+                                        letterSpacing: 0.3))
+                          ],
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text("100 cm",
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodyLarge!
+                                        .copyWith(
+                                            fontWeight: FontWeight.w500,
+                                            letterSpacing: 0.3)),
+                                Text("Tinggi",
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodySmall!
+                                        .copyWith(
+                                            color: neutral400,
+                                            fontWeight: FontWeight.w500,
+                                            letterSpacing: 0.3))
+                              ],
+                            ),
+                            Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text("27.3 IMT",
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodyLarge!
+                                        .copyWith(
+                                            fontWeight: FontWeight.w500,
+                                            letterSpacing: 0.3)),
+                                Text("Obesitas",
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodySmall!
+                                        .copyWith(
+                                            color: neutral400,
+                                            fontWeight: FontWeight.w500,
+                                            letterSpacing: 0.3))
+                              ],
+                            )
+                          ],
+                        )
+                      ],
+                    ),
                   ),
                 ),
                 const Gap(spacing * 2),
@@ -289,23 +424,82 @@ class _HomePageState extends State<HomePage> {
                 Padding(
                   padding: const EdgeInsets.only(left: 0, right: 0),
                   child: Container(
-                    padding: const EdgeInsets.all(spacing * 2),
-                    height: 180,
-                    decoration: BoxDecoration(
-                        color: white,
-                        borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(radius - 4),
-                            topRight: Radius.circular(100),
-                            bottomLeft: Radius.circular(radius - 4),
-                            bottomRight: Radius.circular(radius - 4)),
-                        boxShadow: [
-                          BoxShadow(
-                              color: neutral50,
-                              spreadRadius: -10,
-                              blurRadius: 25,
-                              offset: Offset(0, 10))
-                        ]),
-                  ),
+                      padding: const EdgeInsets.all(spacing * 3),
+                      height: 180,
+                      decoration: BoxDecoration(
+                          color: white,
+                          borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(radius - 4),
+                              topRight: Radius.circular(100),
+                              bottomLeft: Radius.circular(radius - 4),
+                              bottomRight: Radius.circular(radius - 4)),
+                          boxShadow: [
+                            BoxShadow(
+                                color: neutral50,
+                                spreadRadius: -10,
+                                blurRadius: 25,
+                                offset: Offset(0, 10))
+                          ]),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text("$airPutih dari 8 gelas",
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .titleMedium!
+                                      .copyWith(
+                                          fontSize: 20,
+                                          fontWeight: FontWeight.w500,
+                                          letterSpacing: 0.3)),
+                              Text("Rutinitas 8 gelas air putih",
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodySmall!
+                                      .copyWith(
+                                          fontWeight: FontWeight.w400,
+                                          letterSpacing: 0.3)),
+                              const Gap(spacing * 1.5),
+                              Row(
+                                children: [
+                                  SizedBox(
+                                    width: 50,
+                                    height: 50,
+                                    child: ElevatedButton(
+                                      onPressed: () => airPutihAdd(),
+                                      child: Iconify(Ph.plus),
+                                      style: ElevatedButton.styleFrom(
+                                          shape: CircleBorder(), //<-- SEE HERE
+                                          padding: EdgeInsets.all(0),
+                                          backgroundColor: white),
+                                    ),
+                                  ),
+                                  const Gap(spacing),
+                                  SizedBox(
+                                    width: 50,
+                                    height: 50,
+                                    child: ElevatedButton(
+                                      onPressed: () => airPutihReduce(),
+                                      child: Iconify(Ph.minus),
+                                      style: ElevatedButton.styleFrom(
+                                          shape: CircleBorder(), //<-- SEE HERE
+                                          padding: EdgeInsets.all(0),
+                                          backgroundColor: white),
+                                    ),
+                                  )
+                                ],
+                              )
+                            ],
+                          ),
+                          SizedBox(
+                            width: 80,
+                            height: 80,
+                            child: Image.asset('assets/images/water1.png'),
+                          )
+                        ],
+                      )),
                 ),
                 // Text('Selamat Datang! ${userName != '' ? userName : ''}',
                 //     textAlign: TextAlign.center,
@@ -333,6 +527,7 @@ class _HomePageState extends State<HomePage> {
       ),
       bottomNavigationBar: BottomNavigationBar(
         elevation: 10,
+        backgroundColor: white,
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Iconify(Ic.outline_home),

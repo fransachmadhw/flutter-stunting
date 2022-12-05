@@ -2,18 +2,26 @@ import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_stunting/commons/globals.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class NewsInkwell extends StatelessWidget {
-  final String imageUrl;
+  final String? imageUrl;
+  final String? destinationUrl;
   const NewsInkwell({
     super.key,
-    required this.imageUrl,
+    this.imageUrl,
+    this.destinationUrl,
   });
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () {},
+      onTap: () {
+        final url = Uri.parse(
+          destinationUrl!,
+        );
+        launchUrl(url, mode: LaunchMode.externalApplication);
+      },
       child: Container(
         width: 308,
         height: 180,
@@ -21,15 +29,8 @@ class NewsInkwell extends StatelessWidget {
             color: primary300,
             borderRadius: BorderRadius.circular(12),
             image: DecorationImage(
-                image: NetworkImage(imageUrl), fit: BoxFit.cover),
-            boxShadow: [
-              // BoxShadow(
-              //   color: Colors.grey.shade600,
-              //   spreadRadius: 1,
-              //   blurRadius: 15,
-              //   offset: const Offset(5, 5),
-              // ),
-            ]),
+                image: NetworkImage(imageUrl ?? ''), fit: BoxFit.cover),
+            boxShadow: []),
       ),
     );
   }

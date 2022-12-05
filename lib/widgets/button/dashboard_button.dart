@@ -5,13 +5,13 @@ import 'package:iconify_flutter/iconify_flutter.dart';
 // import 'package:iconify_flutter/icons/ph.dart';
 
 class DashboardButton extends StatelessWidget {
-  // final Function onPressed;
+  final Function onPressed;
   final String? icon;
   // final double size;
 
   const DashboardButton({
     super.key,
-    // required this.onPressed,
+    required this.onPressed,
     required this.icon,
     // required this.size
   });
@@ -19,7 +19,7 @@ class DashboardButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(
-      onPressed: () => {},
+      onPressed: () => onPressed(),
       // style: col,
       child: Iconify(
         icon!,
