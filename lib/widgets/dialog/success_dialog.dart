@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_stunting/commons/globals.dart';
 import 'package:flutter_stunting/widgets/button/primary_button.dart';
+import 'package:iconify_flutter/iconify_flutter.dart';
+import 'package:iconify_flutter/icons/material_symbols.dart';
 
 class SuccessDialog extends StatelessWidget {
   final Function onPressed;
@@ -12,7 +14,7 @@ class SuccessDialog extends StatelessWidget {
   Widget build(BuildContext context) {
     return AlertDialog(
       title: Text(
-        'Berhasil Mendaftar',
+        title ?? 'Berhasil Mendaftar',
         textAlign: TextAlign.center,
         style: Theme.of(context).textTheme.titleLarge!.copyWith(
               fontWeight: FontWeight.bold,
@@ -23,7 +25,7 @@ class SuccessDialog extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Text(
-            "Silahkan kembali ke halaman login",
+            subTitle ?? "Silahkan kembali ke halaman login",
             textAlign: TextAlign.center,
             style: Theme.of(context).textTheme.bodyLarge,
           ),

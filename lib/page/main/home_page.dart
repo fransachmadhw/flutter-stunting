@@ -1,21 +1,13 @@
-import 'dart:convert';
-
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:flutter_stunting/commons/globals.dart';
-import 'package:flutter_stunting/data/model/user_model.dart';
-import 'package:flutter_stunting/page/authentication/login_page.dart';
 import 'package:flutter_stunting/page/main/bmi_calculator.dart';
 import 'package:flutter_stunting/page/main/edit_data.dart';
 import 'package:flutter_stunting/page/main/feedback_page.dart';
+import 'package:flutter_stunting/page/main/imt_information.dart';
 import 'package:flutter_stunting/page/main/user_profile.dart';
 import 'package:flutter_stunting/widgets/button/dashboard_button.dart';
-import 'package:flutter_stunting/widgets/button/primary_button.dart';
 import 'package:flutter_stunting/widgets/inkwell/news_inkwell.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 import 'package:iconify_flutter/icons/ph.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:gap/gap.dart';
 import 'package:iconify_flutter/iconify_flutter.dart';
 import 'package:iconify_flutter/icons/mdi.dart';
@@ -34,26 +26,26 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   var userName = '';
 
-  Future logout() async {
-    await FirebaseAuth.instance.signOut();
-    if (GoogleSignIn().currentUser != null) {
-      await GoogleSignIn().disconnect();
-    }
-    if (await FacebookAuth.instance.accessToken != null) {
-      await FacebookAuth.instance.logOut();
-    }
+  // Future logout() async {
+  //   await FirebaseAuth.instance.signOut();
+  //   if (GoogleSignIn().currentUser != null) {
+  //     await GoogleSignIn().disconnect();
+  //   }
+  //   if (await FacebookAuth.instance.accessToken != null) {
+  //     await FacebookAuth.instance.logOut();
+  //   }
 
-    goToLogin();
-  }
+  //   goToLogin();
+  // }
 
-  void goToLogin() {
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(
-        builder: (context) => const LoginPage(),
-      ),
-    );
-  }
+  // void goToLogin() {
+  //   Navigator.pushReplacement(
+  //     context,
+  //     MaterialPageRoute(
+  //       builder: (context) => const LoginPage(),
+  //     ),
+  //   );
+  // }
 
   // Future<dynamic> getUserData() async {
   //   final SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -106,7 +98,6 @@ class _HomePageState extends State<HomePage> {
     if (index == 2) {
       goToUserProfile();
     }
-    ;
   }
 
   int _selectedIndex = 0;
@@ -174,17 +165,15 @@ class _HomePageState extends State<HomePage> {
                     )
                   ],
                 ),
-                SizedBox(
-                  height: spacing * 2,
-                ),
+                const SizedBox(height: spacing),
                 SizedBox(
                   height: 180,
                   child: ListView(
                     scrollDirection: Axis.horizontal,
                     physics: const BouncingScrollPhysics(),
-                    children: [
+                    children: const [
                       Padding(
-                        padding: const EdgeInsets.only(right: spacing),
+                        padding: EdgeInsets.only(right: spacing),
                         child: NewsInkwell(
                             imageUrl:
                                 "https://primaya.b-cdn.net/wp-content/uploads/2021/07/Gejala-Stunting-pada-Anak-dan-Pencegahannya.jpg",
@@ -201,7 +190,7 @@ class _HomePageState extends State<HomePage> {
                         ),
                       ),
                       Padding(
-                        padding: const EdgeInsets.only(right: spacing),
+                        padding: EdgeInsets.only(right: spacing),
                         child: NewsInkwell(
                             imageUrl:
                                 "https://yankes.kemkes.go.id/img/bg-img/gambarartikel_1661498786_242330.jpg",
@@ -211,15 +200,15 @@ class _HomePageState extends State<HomePage> {
                     ],
                   ),
                 ),
-                SizedBox(
-                  height: spacing * 3,
+                const SizedBox(height: spacing * 3),
+                Text(
+                  'Dashboard',
+                  textAlign: TextAlign.left,
+                  style: Theme.of(context)
+                      .textTheme
+                      .headlineSmall!
+                      .copyWith(fontSize: 18, letterSpacing: 0.3),
                 ),
-                Text('Dashboard',
-                    textAlign: TextAlign.left,
-                    style: Theme.of(context)
-                        .textTheme
-                        .headlineSmall!
-                        .copyWith(fontSize: 18, letterSpacing: 0.3)),
                 const Gap(spacing),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.start,
@@ -245,26 +234,36 @@ class _HomePageState extends State<HomePage> {
                       ],
                     ),
                     const Gap(spacing * 2),
-                    Column(
-                      children: [
-                        SizedBox(
-                          width: 80,
-                          height: 80,
-                          child: DashboardButton(
-                              icon: Ic.outline_help_outline,
-                              onPressed: () => {}),
-                        ),
-                        const Gap(spacing),
-                        Text(
-                          'Penjelasan\nStunting',
-                          textAlign: TextAlign.center,
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodySmall!
-                              .copyWith(height: 1.2),
-                        ),
-                      ],
-                    ),
+                    // InkWell(
+                    //   onTap: () => Navigator.push(
+                    //     context,
+                    //     MaterialPageRoute(
+                    //       builder: (context) => const IMTInformation(),
+                    //     ),
+                    //   ),
+                    //   child: Column(
+                    //     mainAxisAlignment: MainAxisAlignment.center,
+                    //     children: [
+                    //        SizedBox(
+                    //         width: 80,
+                    //         height: 80,
+                    //         child: DashboardButton(
+                    //           icon: Ic.outline_help_outline,
+                    //           onPressed: () => goToVerifyData())
+                    //         ),
+                    //       ),
+                    //       // const Gap(spacing),
+                    //       Text(
+                    //         'Penjelasan\nStunting',
+                    //         textAlign: TextAlign.center,
+                    //         style: Theme.of(context)
+                    //             .textTheme
+                    //             .bodySmall!
+                    //             .copyWith(height: 1.2),
+                    //       ),
+                    //     ],
+                    //   ),
+                    // ),
                     const Gap(spacing * 2),
                     Column(
                       children: [
@@ -303,15 +302,15 @@ class _HomePageState extends State<HomePage> {
                       height: 55,
                       child: ElevatedButton(
                         onPressed: () => goToCalculator(),
-                        child: Iconify(
-                          Ph.arrow_right,
-                          // size: 24,
-                        ),
                         style: ButtonStyle(
                             backgroundColor:
                                 MaterialStateProperty.all(white.withAlpha(0)),
                             shadowColor: MaterialStateProperty.all(
                                 primary400.withAlpha(0))),
+                        child: const Iconify(
+                          Ph.arrow_right,
+                          // size: 24,
+                        ),
                       ),
                     )
                   ],
@@ -322,7 +321,7 @@ class _HomePageState extends State<HomePage> {
                   child: Container(
                     padding: const EdgeInsets.all(spacing * 3),
                     height: 180,
-                    decoration: BoxDecoration(
+                    decoration: const BoxDecoration(
                         color: white,
                         borderRadius: BorderRadius.only(
                             topLeft: Radius.circular(radius - 4),

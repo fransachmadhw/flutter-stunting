@@ -1,6 +1,6 @@
 name: flutter_stunting
 description: A new Flutter project.
-publish_to: "none" 
+publish_to: "none"
 version: 1.0.0+1
 
 environment:
@@ -21,13 +21,13 @@ dependencies:
   gap: ^2.0.1
   url_launcher: ^6.1.7
   intl: ^0.17.0
+  getwidget: ^2.0.4
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
 
   flutter_lints: ^2.0.0
-
 
 flutter:
   uses-material-design: true
