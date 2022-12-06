@@ -84,6 +84,13 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
+  void goToIMTinformation() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const IMTInformation()),
+    );
+  }
+
   void goToFeedback() {
     Navigator.push(
       context,
@@ -234,6 +241,25 @@ class _HomePageState extends State<HomePage> {
                       ],
                     ),
                     const Gap(spacing * 2),
+                    Column(
+                      children: [
+                        SizedBox(
+                            width: 80,
+                            height: 80,
+                            child: DashboardButton(
+                                icon: Ic.outline_create,
+                                onPressed: () => goToIMTinformation())),
+                        const Gap(spacing),
+                        Text(
+                          'Penjelasan\nStunting',
+                          textAlign: TextAlign.center,
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodySmall!
+                              .copyWith(height: 1.2),
+                        ),
+                      ],
+                    ),
                     // InkWell(
                     //   onTap: () => Navigator.push(
                     //     context,
