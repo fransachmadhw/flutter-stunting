@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_stunting/commons/globals.dart';
 import 'package:flutter_stunting/page/main/bmi_calculator.dart';
+import 'package:flutter_stunting/page/main/camera_screen.dart';
 import 'package:flutter_stunting/page/main/edit_data.dart';
 import 'package:flutter_stunting/page/main/feedback_page.dart';
 import 'package:flutter_stunting/page/main/imt_information.dart';
@@ -98,10 +99,20 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
+  void goToCamera() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => CameraScreen()),
+    );
+  }
+
   void onTabTapped(int index) {
     setState(() {
       _selectedIndex = index;
     });
+    if (index == 1) {
+      goToCamera();
+    }
     if (index == 2) {
       goToUserProfile();
     }
