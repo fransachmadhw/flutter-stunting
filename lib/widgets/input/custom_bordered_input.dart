@@ -7,6 +7,7 @@ class CustomBorderedInput extends StatelessWidget {
   final ValueChanged<String> onChanged;
   final TextEditingController? controller;
   final String? suffixIcon, prefixIcon, hintText;
+  final TextInputType? inputType;
 
   const CustomBorderedInput(
       {super.key,
@@ -15,7 +16,8 @@ class CustomBorderedInput extends StatelessWidget {
       this.suffixIcon,
       this.prefixIcon,
       this.hintText,
-      this.isPassword});
+      this.isPassword,
+      this.inputType});
 
   @override
   Widget build(BuildContext context) {
@@ -32,6 +34,7 @@ class CustomBorderedInput extends StatelessWidget {
         onChanged: onChanged,
         obscureText: isPassword ?? false,
         style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: black),
+        keyboardType: inputType ?? TextInputType.text,
         decoration: InputDecoration(
           suffixIcon: suffixIcon != null
               ? Iconify(suffixIcon!, color: neutral200)

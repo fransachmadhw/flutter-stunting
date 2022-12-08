@@ -1,3 +1,6 @@
+import 'dart:convert';
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_stunting/commons/globals.dart';
 import 'package:flutter_stunting/page/main/bmi_calculator.dart';
@@ -16,6 +19,7 @@ import 'package:iconify_flutter/icons/ic.dart';
 import 'package:iconify_flutter/icons/uil.dart';
 import 'package:intl/intl.dart';
 import 'package:intl/date_symbol_data_local.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -26,8 +30,10 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   var userName = '';
+  var userBMI = {};
 
   // Future logout() async {
+  // final SharedPreferences prefs = await SharedPreferences.getInstance();
   //   await FirebaseAuth.instance.signOut();
   //   if (GoogleSignIn().currentUser != null) {
   //     await GoogleSignIn().disconnect();
@@ -35,6 +41,8 @@ class _HomePageState extends State<HomePage> {
   //   if (await FacebookAuth.instance.accessToken != null) {
   //     await FacebookAuth.instance.logOut();
   //   }
+  // prefs.remove("user_data");
+  // prefs.remove("user_health");
 
   //   goToLogin();
   // }
@@ -62,6 +70,42 @@ class _HomePageState extends State<HomePage> {
     // getUserData();
     initializeDateFormatting('id_ID', null);
     Intl.defaultLocale = 'id';
+    getUserBMI();
+  }
+
+  void getUserBMI() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final obj = prefs.getString("user_health");
+    if (obj != null) {
+      final data = json.decode(obj);
+      setState(() {
+        userBMI = data;
+      });
+    }
+  }
+
+  String calculateBMI(int height, int weight) {
+    double heightToM = height / 100;
+    double imt = weight / (heightToM * heightToM);
+    setState(() {
+      userBMI["imt"] = imt;
+    });
+    return imt.toStringAsFixed(2);
+  }
+
+  String getIMTStatus() {
+    final imt = userBMI["imt"] ?? 0;
+    if (imt == 0) {
+      return "No Data";
+    } else if (imt < 18.5) {
+      return "Kurus";
+    } else if (imt >= 18.5 && imt < 22.9) {
+      return "Normal";
+    } else if (imt >= 22.9 && imt < 24.9) {
+      return "Gemuk";
+    } else {
+      return "Obesitas";
+    }
   }
 
   void goToCalculator() {
@@ -168,7 +212,7 @@ class _HomePageState extends State<HomePage> {
                             .copyWith(fontSize: 18)),
                     Row(
                       children: [
-                        Iconify(
+                        const Iconify(
                           Ph.calendar_blank,
                           size: 20,
                         ),
@@ -199,7 +243,7 @@ class _HomePageState extends State<HomePage> {
                                 "https://primayahospital.com/anak/mencegah-anak-stunting/"),
                       ),
                       Padding(
-                        padding: const EdgeInsets.only(right: spacing),
+                        padding: EdgeInsets.only(right: spacing),
                         child: NewsInkwell(
                           imageUrl:
                               "https://p2ptm.kemkes.go.id/uploads/VHcrbkVobjRzUDN3UCs4eUJ0dVBndz09/2017/stunting_01.png",
@@ -388,7 +432,7 @@ class _HomePageState extends State<HomePage> {
                                         fontSize: 20,
                                         fontWeight: FontWeight.w500,
                                         letterSpacing: 0.3)),
-                            Text("206.8 lbs",
+                            Text("${userBMI["weight"] ?? "--"} kg",
                                 style: Theme.of(context)
                                     .textTheme
                                     .titleLarge!
@@ -405,7 +449,7 @@ class _HomePageState extends State<HomePage> {
                               mainAxisAlignment: MainAxisAlignment.start,
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text("100 cm",
+                                Text("${userBMI["height"] ?? "--"} cm",
                                     style: Theme.of(context)
                                         .textTheme
                                         .bodyLarge!
@@ -426,14 +470,15 @@ class _HomePageState extends State<HomePage> {
                               mainAxisAlignment: MainAxisAlignment.start,
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text("27.3 IMT",
+                                Text(
+                                    "${userBMI["weight"] != null && userBMI["height"] != null ? calculateBMI(int.parse(userBMI["height"]), int.parse(userBMI["weight"])) : "--"} IMT",
                                     style: Theme.of(context)
                                         .textTheme
                                         .bodyLarge!
                                         .copyWith(
                                             fontWeight: FontWeight.w500,
                                             letterSpacing: 0.3)),
-                                Text("Obesitas",
+                                Text(getIMTStatus(),
                                     style: Theme.of(context)
                                         .textTheme
                                         .bodySmall!
@@ -462,7 +507,7 @@ class _HomePageState extends State<HomePage> {
                   child: Container(
                       padding: const EdgeInsets.all(spacing * 3),
                       height: 180,
-                      decoration: BoxDecoration(
+                      decoration: const BoxDecoration(
                           color: white,
                           borderRadius: BorderRadius.only(
                               topLeft: Radius.circular(radius - 4),
@@ -505,11 +550,12 @@ class _HomePageState extends State<HomePage> {
                                     height: 50,
                                     child: ElevatedButton(
                                       onPressed: () => airPutihAdd(),
-                                      child: Iconify(Ph.plus),
                                       style: ElevatedButton.styleFrom(
-                                          shape: CircleBorder(), //<-- SEE HERE
-                                          padding: EdgeInsets.all(0),
+                                          shape:
+                                              const CircleBorder(), //<-- SEE HERE
+                                          padding: const EdgeInsets.all(0),
                                           backgroundColor: white),
+                                      child: const Iconify(Ph.plus),
                                     ),
                                   ),
                                   const Gap(spacing),
@@ -518,11 +564,12 @@ class _HomePageState extends State<HomePage> {
                                     height: 50,
                                     child: ElevatedButton(
                                       onPressed: () => airPutihReduce(),
-                                      child: Iconify(Ph.minus),
                                       style: ElevatedButton.styleFrom(
-                                          shape: CircleBorder(), //<-- SEE HERE
-                                          padding: EdgeInsets.all(0),
+                                          shape:
+                                              const CircleBorder(), //<-- SEE HERE
+                                          padding: const EdgeInsets.all(0),
                                           backgroundColor: white),
+                                      child: const Iconify(Ph.minus),
                                     ),
                                   )
                                 ],

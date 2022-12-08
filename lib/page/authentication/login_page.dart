@@ -1,11 +1,8 @@
 import 'dart:convert';
-import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_stunting/commons/globals.dart';
 import 'package:flutter_stunting/data/model/user_model.dart';
 import 'package:flutter_stunting/page/authentication/register_page_1.dart';
