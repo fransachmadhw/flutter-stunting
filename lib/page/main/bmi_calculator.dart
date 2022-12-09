@@ -7,6 +7,7 @@ import 'package:flutter_stunting/widgets/button/custom_back_button.dart';
 import 'package:flutter_stunting/widgets/button/primary_button.dart';
 import 'package:flutter_stunting/widgets/dialog/success_dialog.dart';
 import 'package:flutter_stunting/widgets/input/custom_bordered_input.dart';
+import 'package:flutter_stunting/widgets/input/custom_dropdown_input.dart';
 import 'package:iconify_flutter/icons/mdi.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -29,7 +30,7 @@ class _BMICalculatorState extends State<BMICalculator> {
       context: context,
       builder: (BuildContext context) => SuccessDialog(
         title: "Hasil Analisis",
-        subTitle: "Anda positif stunting",
+        subTitle: getIMTStatus(),
         onPressed: () => goToHome(),
       ),
     );
@@ -46,6 +47,8 @@ class _BMICalculatorState extends State<BMICalculator> {
 
   void submitData() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
+    calculateBMI(int.parse(userBMI["height"]), int.parse(userBMI["weight"]));
+    getIMTStatus();
     prefs.setString("user_health", json.encode(userBMI));
     openDialog();
   }
@@ -76,6 +79,30 @@ class _BMICalculatorState extends State<BMICalculator> {
     genderController.text = data["gender"].toString();
     heightController.text = data["height"].toString();
     weightController.text = data["weight"].toString();
+  }
+
+  String calculateBMI(int height, int weight) {
+    double heightToM = height / 100;
+    double imt = weight / (heightToM * heightToM);
+    setState(() {
+      userBMI["imt"] = imt;
+    });
+    return imt.toStringAsFixed(2);
+  }
+
+  String getIMTStatus() {
+    final imt = userBMI["imt"] ?? 0;
+    if (imt == 0) {
+      return "No Data";
+    } else if (imt < 18.5) {
+      return "Anda positif stunting";
+    } else if (imt >= 18.5 && imt < 22.9) {
+      return "Anda negatif stunting";
+    } else if (imt >= 22.9 && imt < 24.9) {
+      return "Anda negatif stunting";
+    } else {
+      return "Anda positif stunting";
+    }
   }
 
   @override
@@ -127,12 +154,18 @@ class _BMICalculatorState extends State<BMICalculator> {
                       hintText: "Usia",
                       prefixIcon: Mdi.account_outline,
                     ),
-                    CustomBorderedInput(
+                    CustomDropdownInput(
                       controller: genderController,
                       onChanged: (e) => setData(e, "gender"),
                       hintText: "Jenis Kelamin",
                       prefixIcon: Mdi.account_supervisor_outline,
                     ),
+                    // CustomBorderedInput(
+                    //   controller: genderController,
+                    //   onChanged: (e) => setData(e, "gender"),
+                    //   hintText: "Jenis Kelamin",
+                    //   prefixIcon: Mdi.account_supervisor_outline,
+                    // ),
                     CustomBorderedInput(
                       controller: heightController,
                       onChanged: (e) => setData(e, "height"),
