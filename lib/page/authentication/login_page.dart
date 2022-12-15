@@ -102,11 +102,10 @@ class _LoginPageState extends State<LoginPage> {
       formValidate();
 
       if (errMsg != "") return;
+      toggleLoading();
       await FirebaseAuth.instance.signInWithEmailAndPassword(
           email: emailController.text, password: passwordController.text);
       verifyData(emailController.text);
-
-      toggleLoading();
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
         setErr("User with email ${emailController.text} is not found");
@@ -122,10 +121,13 @@ class _LoginPageState extends State<LoginPage> {
   void formValidate() {
     if (emailController.text == '') {
       setErr("Mohon inputkan email anda");
+      toggleLoading();
     } else if (!emailController.text.contains("@")) {
       setErr("Email tidak valid");
+      toggleLoading();
     } else if (passwordController.text == '') {
       setErr("Mohon inputkan password anda");
+      toggleLoading();
     } else {
       setErr("");
     }
@@ -255,8 +257,8 @@ class _LoginPageState extends State<LoginPage> {
                 const SizedBox(height: spacing * 3),
                 PrimaryButton(
                   isLoading: isLoading,
-                  // onPressed: () => _emailLogin(),
-                  onPressed: () => goToHome(),
+                  onPressed: () => _emailLogin(),
+                  // onPressed: () => goToHome(),
                   title: 'Masuk',
                   type: ButtonType.primary,
                 ),

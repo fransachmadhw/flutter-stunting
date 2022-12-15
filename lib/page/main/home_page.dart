@@ -1,8 +1,12 @@
 import 'dart:convert';
 import 'dart:math';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_stunting/data/model/user_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_stunting/commons/globals.dart';
+import 'package:flutter_stunting/page/authentication/login_page.dart';
 import 'package:flutter_stunting/page/main/bmi_calculator.dart';
 import 'package:flutter_stunting/page/main/camera_screen.dart';
 import 'package:flutter_stunting/page/main/edit_data.dart';
@@ -10,6 +14,7 @@ import 'package:flutter_stunting/page/main/feedback_page.dart';
 import 'package:flutter_stunting/page/main/imt_information.dart';
 import 'package:flutter_stunting/page/main/user_profile.dart';
 import 'package:flutter_stunting/widgets/button/dashboard_button.dart';
+import 'package:flutter_stunting/widgets/button/primary_button.dart';
 import 'package:flutter_stunting/widgets/inkwell/news_inkwell.dart';
 import 'package:iconify_flutter/icons/ph.dart';
 import 'package:gap/gap.dart';
@@ -19,55 +24,61 @@ import 'package:iconify_flutter/icons/ic.dart';
 import 'package:iconify_flutter/icons/uil.dart';
 import 'package:intl/intl.dart';
 import 'package:intl/date_symbol_data_local.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({super.key});
-  // final UserModel? user;
+  const HomePage({super.key, this.user});
+  final UserModel? user;
   @override
   State<StatefulWidget> createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
-  var userName = '';
+  String userName = '';
   var userBMI = {};
 
-  // Future logout() async {
-  // final SharedPreferences prefs = await SharedPreferences.getInstance();
-  //   await FirebaseAuth.instance.signOut();
-  //   if (GoogleSignIn().currentUser != null) {
-  //     await GoogleSignIn().disconnect();
-  //   }
-  //   if (await FacebookAuth.instance.accessToken != null) {
-  //     await FacebookAuth.instance.logOut();
-  //   }
-  // prefs.remove("user_data");
-  // prefs.remove("user_health");
+  Future logout() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    await FirebaseAuth.instance.signOut();
+    if (GoogleSignIn().currentUser != null) {
+      await GoogleSignIn().disconnect();
+    }
+    if (await FacebookAuth.instance.accessToken != null) {
+      await FacebookAuth.instance.logOut();
+    }
+    prefs.remove("user_data");
+    prefs.remove("user_health");
 
-  //   goToLogin();
-  // }
+    goToLogin();
+  }
 
-  // void goToLogin() {
-  //   Navigator.pushReplacement(
-  //     context,
-  //     MaterialPageRoute(
-  //       builder: (context) => const LoginPage(),
-  //     ),
-  //   );
-  // }
+  void goToLogin() {
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const LoginPage(),
+      ),
+    );
+  }
 
-  // Future<dynamic> getUserData() async {
-  //   final SharedPreferences prefs = await SharedPreferences.getInstance();
-  //   UserModel user =
-  //       UserModel.fromJson(json.decode(prefs.getString("user_data")!));
-  //   print(user.fullName);
-  // }
+  Future<dynamic> getUserData() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    UserModel user =
+        UserModel.fromJson(json.decode(prefs.getString("user_data")!));
+
+    setState(() {
+      userName = user.fullName;
+    });
+    // print(user.fullName);
+  }
 
   @override
   void initState() {
     super.initState();
     // getUserName();
-    // getUserData();
+    getUserData();
     initializeDateFormatting('id_ID', null);
     Intl.defaultLocale = 'id';
     getUserBMI();
@@ -118,7 +129,9 @@ class _HomePageState extends State<HomePage> {
   void goToUserProfile() {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => const UserProfile()),
+      MaterialPageRoute(
+        builder: (context) => UserProfile(userName: userName),
+      ),
     );
   }
 
@@ -204,7 +217,7 @@ class _HomePageState extends State<HomePage> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text('Halo, Bayu!',
+                    Text('Halo, ${userName != '' ? userName : 'user'}!',
                         textAlign: TextAlign.center,
                         style: Theme.of(context)
                             .textTheme
@@ -505,85 +518,91 @@ class _HomePageState extends State<HomePage> {
                 Padding(
                   padding: const EdgeInsets.only(left: 0, right: 0),
                   child: Container(
-                      padding: const EdgeInsets.all(spacing * 3),
-                      height: 180,
-                      decoration: const BoxDecoration(
-                          color: white,
-                          borderRadius: BorderRadius.only(
-                              topLeft: Radius.circular(radius - 4),
-                              topRight: Radius.circular(100),
-                              bottomLeft: Radius.circular(radius - 4),
-                              bottomRight: Radius.circular(radius - 4)),
-                          boxShadow: [
-                            BoxShadow(
-                                color: neutral50,
-                                spreadRadius: -10,
-                                blurRadius: 25,
-                                offset: Offset(0, 10))
-                          ]),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text("$airPutih dari 8 gelas",
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .titleMedium!
-                                      .copyWith(
-                                          fontSize: 20,
-                                          fontWeight: FontWeight.w500,
-                                          letterSpacing: 0.3)),
-                              Text("Rutinitas 8 gelas air putih",
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .bodySmall!
-                                      .copyWith(
-                                          fontWeight: FontWeight.w400,
-                                          letterSpacing: 0.3)),
-                              const Gap(spacing * 1.5),
-                              Row(
-                                children: [
-                                  SizedBox(
-                                    width: 50,
-                                    height: 50,
-                                    child: ElevatedButton(
-                                      onPressed: () => airPutihAdd(),
-                                      style: ElevatedButton.styleFrom(
-                                          shape:
-                                              const CircleBorder(), //<-- SEE HERE
-                                          padding: const EdgeInsets.all(0),
-                                          backgroundColor: white),
-                                      child: const Iconify(Ph.plus),
-                                    ),
+                    padding: const EdgeInsets.all(spacing * 3),
+                    height: 180,
+                    decoration: const BoxDecoration(
+                        color: white,
+                        borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(radius - 4),
+                            topRight: Radius.circular(100),
+                            bottomLeft: Radius.circular(radius - 4),
+                            bottomRight: Radius.circular(radius - 4)),
+                        boxShadow: [
+                          BoxShadow(
+                              color: neutral50,
+                              spreadRadius: -10,
+                              blurRadius: 25,
+                              offset: Offset(0, 10))
+                        ]),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text("$airPutih dari 8 gelas",
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .titleMedium!
+                                    .copyWith(
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.w500,
+                                        letterSpacing: 0.3)),
+                            Text("Rutinitas 8 gelas air putih",
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodySmall!
+                                    .copyWith(
+                                        fontWeight: FontWeight.w400,
+                                        letterSpacing: 0.3)),
+                            const Gap(spacing * 1.5),
+                            Row(
+                              children: [
+                                SizedBox(
+                                  width: 50,
+                                  height: 50,
+                                  child: ElevatedButton(
+                                    onPressed: () => airPutihAdd(),
+                                    style: ElevatedButton.styleFrom(
+                                        shape:
+                                            const CircleBorder(), //<-- SEE HERE
+                                        padding: const EdgeInsets.all(0),
+                                        backgroundColor: white),
+                                    child: const Iconify(Ph.plus),
                                   ),
-                                  const Gap(spacing),
-                                  SizedBox(
-                                    width: 50,
-                                    height: 50,
-                                    child: ElevatedButton(
-                                      onPressed: () => airPutihReduce(),
-                                      style: ElevatedButton.styleFrom(
-                                          shape:
-                                              const CircleBorder(), //<-- SEE HERE
-                                          padding: const EdgeInsets.all(0),
-                                          backgroundColor: white),
-                                      child: const Iconify(Ph.minus),
-                                    ),
-                                  )
-                                ],
-                              )
-                            ],
-                          ),
-                          SizedBox(
-                            width: 80,
-                            height: 80,
-                            child: Image.asset('assets/images/water1.png'),
-                          )
-                        ],
-                      )),
+                                ),
+                                const Gap(spacing),
+                                SizedBox(
+                                  width: 50,
+                                  height: 50,
+                                  child: ElevatedButton(
+                                    onPressed: () => airPutihReduce(),
+                                    style: ElevatedButton.styleFrom(
+                                        shape:
+                                            const CircleBorder(), //<-- SEE HERE
+                                        padding: const EdgeInsets.all(0),
+                                        backgroundColor: white),
+                                    child: const Iconify(Ph.minus),
+                                  ),
+                                )
+                              ],
+                            )
+                          ],
+                        ),
+                        SizedBox(
+                          width: 80,
+                          height: 80,
+                          child: Image.asset('assets/images/water1.png'),
+                        )
+                      ],
+                    ),
+                  ),
                 ),
+                PrimaryButton(
+                    isLoading: false,
+                    onPressed: () => logout(),
+                    title: 'Sign Out',
+                    type: ButtonType.primary)
                 // Text('Selamat Datang! ${userName != '' ? userName : ''}',
                 //     textAlign: TextAlign.center,
                 //     style: Theme.of(context).textTheme.headlineSmall),
